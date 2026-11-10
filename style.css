@@ -890,6 +890,22 @@ body.is-sub .nav { display: none; }
   88%  { transform: translateY(0) scale(1, 1); }
   100% { transform: translateY(0) scale(1.15, .85); }
 }
+.loader__ripple {
+  fill: none;
+  stroke: #B9A2EC;
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: ripple .9s ease-out infinite;
+}
+.loader__ripple--2 { animation-delay: .12s; stroke-width: 1.4; }
+/* 별이 바닥에 닿는 순간(애니메이션 시작점)에 맞춰 물결이 퍼짐 */
+@keyframes ripple {
+  0%   { transform: scale(.25); opacity: .9; }
+  70%  { opacity: .25; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
 .loader__dot { fill: #D9CBF3; animation: dotBlink .9s ease-in-out infinite; }
 .loader__dot--b { animation-delay: .45s; }
 @keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
@@ -944,3 +960,103 @@ body.is-sub .nav { display: none; }
   color: #B3AFC2;
 }
 body.is-loading { overflow: hidden; }
+
+/* ---------------- 클릭하면 퍼지는 연못 물결 ---------------- */
+.tap-ripple {
+  position: fixed;
+  z-index: 90;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.tap-ripple i {
+  position: absolute;
+  left: -40px;
+  top: -40px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(185, 162, 236, .75);
+  border-radius: 50%;
+  opacity: 0;
+  animation: tapRipple .7s ease-out forwards;
+}
+.tap-ripple i:nth-child(2) { animation-delay: .1s; border-width: 1.5px; }
+@keyframes tapRipple {
+  0%   { transform: scale(.1); opacity: .9; }
+  100% { transform: scale(1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .tap-ripple { display: none; } }
+
+/* ---------------- 캐릭터 발밑 연못 물결 (항상 캐릭터 뒤에) ---------------- */
+.ripples {
+  position: relative;
+  display: block;
+  pointer-events: none;
+}
+.ripples i {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(185, 162, 236, .6);
+  border-radius: 50%;
+  opacity: 0;
+}
+/* 앞 절반 동안 퍼지고, 뒤 절반은 쉬는 물결 (캐릭터가 내려올 때마다 한 번) */
+@keyframes pondRipple {
+  0%   { transform: scale(.35); opacity: .95; }
+  50%  { transform: scale(1.2); opacity: 0; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+/* 한 번만 퍼지는 물결 */
+@keyframes pondRippleOnce {
+  0%   { transform: scale(.35); opacity: .95; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+/* HOME: 둥실(3.2초)에서 바닥으로 내려오는 순간마다 */
+.ripples--home i:nth-child(1) { animation: pondRipple 3.2s ease-out infinite; }
+.ripples--home i:nth-child(2) { animation: pondRipple 3.2s ease-out .25s infinite; border-width: 1.5px; }
+/* WORK: 노트북 아루가 뽀용 하고 착지하는 순간에 한 번 */
+.work.is-visible .ripples--work i:nth-child(1) { animation: pondRippleOnce 1.4s ease-out 1.05s both; }
+.work.is-visible .ripples--work i:nth-child(2) { animation: pondRippleOnce 1.4s ease-out 1.3s both; border-width: 1.5px; }
+/* CONTACT: 둥실(3초, 1.6초 뒤 시작)에서 내려올 때마다 + 폴짝 뛸 때 */
+.contact.is-visible .ripples--contact i:nth-child(1) { animation: pondRipple 3s ease-out 1.6s infinite; }
+.contact.is-visible .ripples--contact i:nth-child(2) { animation: pondRipple 3s ease-out 1.85s infinite; border-width: 1.5px; }
+.ripples--contact.is-splash i:nth-child(3) { animation: pondRippleOnce .9s ease-out .38s; }
+/* HOME: 손 흔드는 아루 발밑 */
+.ripples--home {
+  position: absolute;
+  left: 51%;
+  top: 94%;
+  width: 78%;
+  height: 13%;
+  translate: -50% -50%;
+  z-index: 0;
+}
+/* WORK: 노트북 아루 아래 */
+.ripples--work {
+  width: clamp(200px, 15vw, 290px);
+  height: clamp(30px, 2.3vw, 44px);
+  margin-top: calc(clamp(30px, 2.3vw, 44px) * -0.75);
+  opacity: 0;
+  transition: opacity .8s ease .8s;
+}
+.work.is-visible .ripples--work { opacity: 1; }
+.work__aru { position: relative; z-index: 1; }
+/* CONTACT: 편지 든 아루 아래 */
+.ripples--contact {
+  width: clamp(190px, 14vw, 280px);
+  height: clamp(28px, 2.2vw, 42px);
+  margin-top: calc(clamp(28px, 2.2vw, 42px) * -0.85);
+  opacity: 0;
+  transition: opacity .8s ease .6s;
+}
+.contact.is-visible .ripples--contact { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .ripples i { animation: none !important; opacity: .4; transform: scale(.8); } }
+
+#work > .ripples--work,
+#contact > .ripples--contact { z-index: 0 !important; }
+#work > .work__aru,
+#contact > .contact__aru { z-index: 2 !important; }
+.home__aru .aru-sprite { z-index: 2; }
+.home__aru .ripples--home { z-index: 0; }

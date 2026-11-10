@@ -273,6 +273,11 @@ function setPose(pose) {
   contactAru.classList.remove("is-hop");
   void contactAru.offsetWidth;
   contactAru.classList.add("is-hop");
+  // 폴짝 뛰고 착지할 때 물결 한 번
+  const splash = $(".ripples--contact");
+  splash.classList.remove("is-splash");
+  void splash.offsetWidth;
+  splash.classList.add("is-splash");
 }
 $$(".contact__btn").forEach((btn) => {
   const pose = btn.dataset.pose;
@@ -282,7 +287,14 @@ $$(".contact__btn").forEach((btn) => {
 });
 $(".contact__list").addEventListener("mouseleave", () => setPose(lockedPose));
 contactAru.addEventListener("animationend", (e) => {
-  if (e.animationName === "hop") contactAru.classList.remove("is-hop");
+  if (e.animationName !== "hop") return;
+  contactAru.classList.remove("is-hop");
+  // 둥실이 처음부터 다시 시작하므로 발밑 물결도 같이 처음부터 (박자 맞추기)
+  requestAnimationFrame(() => {
+    $$(".ripples--contact i").forEach((r) => r.getAnimations().forEach((a) => {
+      if (a.animationName === "pondRipple") a.currentTime = 0;
+    }));
+  });
 });
 
 /* ---------- CONTACT ---------- */
@@ -426,6 +438,18 @@ window.addEventListener("resize", readScroll);
   currentP = targetP = clamp01((vh * 0.3 - contactEl.getBoundingClientRect().top) / (vh * 0.3));
   applyClouds(currentP);
 })();
+
+/* ---------- 클릭(터치)한 자리에 연못 물결 ---------- */
+document.addEventListener("pointerdown", (e) => {
+  if (document.body.classList.contains("is-loading") || reduceMotion) return;
+  const r = document.createElement("span");
+  r.className = "tap-ripple";
+  r.style.left = `${e.clientX}px`;
+  r.style.top = `${e.clientY}px`;
+  r.innerHTML = "<i></i><i></i>";
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 900);
+}, { passive: true });
 
 /* ---------- ESC로 하위 화면 닫기 ---------- */
 document.addEventListener("keydown", (e) => {
