@@ -15,7 +15,7 @@ assets/
 .nojekyll       ← GitHub Pages용 빈 파일 (지우지 마세요)
 README.md       ← 지금 이 안내서
 
-(assets/images 안의 favicon.png = 탭 아이콘, og-image.jpg = 링크 미리보기 이미지, cloud-left.png · cloud-right.png = WORK 구름 + CONTACT로 넘어갈 때 걷히는 구름, aru-letter · aru-youtube · aru-instagram · aru-mail.png = CONTACT 아루 4가지)
+(assets/images 안의 favicon.png = 탭 아이콘, og-image.jpg = 링크 미리보기 이미지, cloud-left.png · cloud-right.png = WORK 구름 + CONTACT에서 걷히는 구름, aru-letter · aru-youtube · aru-instagram · aru-mail.png = CONTACT 아루 4가지)
 ```
 
 ---
@@ -44,7 +44,7 @@ README.md       ← 지금 이 안내서
 - [ ] MAIL을 누르면 버튼 글자가 메일 주소로 바뀌고, 한 번 더 누르면 메일 쓰기 창이 열리나요?
 - [ ] 브라우저 탭에 아루 얼굴 아이콘이 보이나요?
 - [ ] 첫 화면 아래 ↓ 버튼을 누르면 WORK로 내려가나요?
-- [ ] WORK에서 CONTACT로 스크롤하면 구름이 화면을 덮었다가 양옆으로 걷히나요?
+- [ ] CONTACT로 스크롤하면 구름이 화면을 덮었다가 양옆으로 걷히나요?
 - [ ] CONTACT에 별이 반짝이고, YOUTUBE · INSTAGRAM · MAIL 버튼마다 아루가 해당 아이콘을 든 모습으로 바뀌나요?
 - [ ] 맨 아래에 © 푸터가 보이나요?
 

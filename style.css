@@ -404,6 +404,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @keyframes shake { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
 /* WORK에서 이어지는 구름 → 스크롤하면 양옆으로 걷힘 (--p: 0 덮임 ~ 1 걷힘) */
+/* WORK 구름 아래쪽을 안개처럼 흐리게 → 다음 섹션과 경계선이 안 보이게 */
+.work > .cloud {
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+}
+.work::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 18%;
+  background: linear-gradient(to bottom, rgba(244, 243, 250, 0), rgba(244, 243, 250, 1));
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* 움직임 값(이동·크기·흐림·투명도)은 script.js에서 스크롤에 맞춰 부드럽게 계산 */
 .cloud-cover {
   position: absolute;
@@ -418,18 +433,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 45% at 30% 55%, rgba(246, 244, 251, .95), rgba(246, 244, 251, 0) 70%),
-    radial-gradient(ellipse 55% 50% at 72% 62%, rgba(243, 241, 250, .95), rgba(243, 241, 250, 0) 70%),
-    linear-gradient(to bottom, rgba(244, 243, 250, 0) 0%, rgba(244, 243, 250, .85) 25%, rgba(244, 243, 250, .9) 100%);
+    radial-gradient(ellipse 60% 45% at 30% 55%, rgba(248, 246, 252, 1), rgba(248, 246, 252, 0) 75%),
+    radial-gradient(ellipse 55% 50% at 72% 62%, rgba(245, 243, 251, 1), rgba(245, 243, 251, 0) 75%),
+    linear-gradient(to bottom, rgba(244, 243, 250, 1) 0%, rgba(244, 243, 250, .97) 18%, rgba(244, 243, 250, 1) 100%);
   opacity: var(--fog, 1);
 }
 .cc { position: absolute; height: auto; max-width: none; will-change: transform, opacity, filter; }
-/* 위쪽 두 장: WORK 아래 구름을 위아래로 뒤집어 이어 붙임 (경계가 딱 맞음) */
-.cc--top-left  { top: -1px; left: -15vw;  width: clamp(420px, 52vw, 1100px); transform: scaleY(-1); animation: drift 9s ease-in-out infinite; z-index: 1; }
-.cc--top-right { top: -1px; right: -17vw; width: clamp(460px, 64vw, 1300px); transform: scaleY(-1); animation: drift 11s ease-in-out infinite reverse; z-index: 1; }
 /* 가운데를 덮는 큰 구름 두 장 (앞쪽 레이어) */
-.cc--mid-left  { top: 4vh;  left: -26vw;  width: 100vw; z-index: 2; }
-.cc--mid-right { top: 14vh; right: -34vw; width: 125vw; z-index: 2; }
+.cc--mid-left  { top: -6vh; left: -30vw;  width: 115vw; z-index: 2; }
+.cc--mid-right { top: 8vh;  right: -38vw; width: 140vw; z-index: 2; }
+/* 화면 한가운데를 꽉 막는 앞쪽 구름 두 장 */
+.cc--center-left  { top: 30vh; left: -20vw;  width: 105vw; z-index: 3; transform: scaleX(-1); }
+.cc--center-right { top: 22vh; right: -25vw; width: 110vw; z-index: 3; transform: scaleX(-1); }
 .cloud-cover.is-gone { display: none; }
 
 /* 반짝이는 별 (타이틀·버튼을 피해서 배치) */
@@ -806,10 +821,10 @@ body.is-sub .nav { display: none; }
   .work > .cloud { max-width: none; }
   .cloud--left { width: 120vw; left: -50vw; }
   .cloud--right { width: 135vw; right: -62vw; }
-  .cc--top-left { width: 120vw; left: -50vw; }
-  .cc--top-right { width: 135vw; right: -62vw; }
-  .cc--mid-left { width: 190vw; left: -75vw; top: 6vh; }
-  .cc--mid-right { width: 210vw; right: -95vw; top: 24vh; }
+  .cc--mid-left { width: 200vw; left: -80vw; top: 0; }
+  .cc--mid-right { width: 220vw; right: -100vw; top: 18vh; }
+  .cc--center-left { width: 200vw; left: -70vw; top: 38vh; }
+  .cc--center-right { width: 200vw; right: -80vw; top: 28vh; }
   .nav { gap: 0; padding: 4px 8px 6px; }
   .nav__item { width: 64px; }
   .nav__icon { width: 52px; height: 38px; }

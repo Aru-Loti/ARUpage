@@ -353,20 +353,17 @@ if ("IntersectionObserver" in window) {
   $$(".split, .reveal").forEach((el) => el.classList.add("is-in"));
 }
 
-/* ---------- WORK → CONTACT: 구름이 걷히는 스크롤 효과 ---------- */
+/* ---------- CONTACT 진입: 구름이 걷히는 스크롤 효과 ---------- */
 const cover = $("#cloudCover");
 const contactEl = $("#contact");
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2); // 부드럽게 시작·끝
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 /* 레이어마다 걷히는 타이밍·방향을 다르게 (앞쪽 구름이 먼저, 뒤쪽 구름이 나중에) */
 const CLOUD_LAYERS = [
-  { el: $(".cc--mid-left"),  from: 0.0,  to: 0.75, dx: -70, dy: 6,  scale: 0.25, blur: 8 },
-  { el: $(".cc--mid-right"), from: 0.05, to: 0.8,  dx: 75,  dy: 8,  scale: 0.25, blur: 8 },
-  { el: $(".cc--top-left"),  from: 0.2,  to: 1.0,  dx: -50, dy: 0,  scale: 0,    blur: 3, flip: true },
-  { el: $(".cc--top-right"), from: 0.25, to: 1.0,  dx: 55,  dy: 0,  scale: 0,    blur: 3, flip: true },
-  // WORK 아래 구름도 위 두 장과 똑같이 움직여서 경계가 이어져 보이게
-  { el: $(".work > .cloud--left"),  from: 0.2,  to: 1.0, dx: -50, dy: 0, scale: 0, blur: 3 },
-  { el: $(".work > .cloud--right"), from: 0.25, to: 1.0, dx: 55,  dy: 0, scale: 0, blur: 3 },
+  { el: $(".cc--center-left"),  from: 0.1,  to: 0.7,  dx: -85, dy: 10, scale: 0.3, blur: 10, flipX: true },
+  { el: $(".cc--center-right"), from: 0.12, to: 0.72, dx: 90,  dy: 8,  scale: 0.3, blur: 10, flipX: true },
+  { el: $(".cc--mid-left"),  from: 0.2,  to: 0.85, dx: -75, dy: 6,  scale: 0.25, blur: 8 },
+  { el: $(".cc--mid-right"), from: 0.24, to: 0.88, dx: 80,  dy: 8,  scale: 0.25, blur: 8 },
 ];
 let targetP = 0;
 let currentP = 0;
@@ -377,23 +374,23 @@ function readScroll() {
   if (!views.main.classList.contains("is-active")) return;
   const vh = window.innerHeight;
   const top = contactEl.getBoundingClientRect().top;
-  // CONTACT 위쪽이 화면 45% 지점 → 맨 위로 올라오는 동안 0 → 1
-  targetP = clamp01((vh * 0.45 - top) / (vh * 0.45));
+  // CONTACT 위쪽이 화면 30% 지점 → 맨 위로 올라오는 동안 0 → 1 (그 전엔 구름이 꽉 덮고 있음)
+  targetP = clamp01((vh * 0.3 - top) / (vh * 0.3));
   if (!cloudLoop) cloudLoop = requestAnimationFrame(stepClouds);
 }
 function applyClouds(p) {
   CLOUD_LAYERS.forEach((L) => {
     if (!L.el) return;
     const t = ease(clamp01((p - L.from) / (L.to - L.from)));
-    const flip = L.flip ? " scaleY(-1)" : "";
+    const flip = (L.flip ? " scaleY(-1)" : "") + (L.flipX ? " scaleX(-1)" : "");
     L.el.style.transform = `translate(${L.dx * t}vw, ${L.dy * t}vh) scale(${1 + L.scale * t})${flip}`;
     L.el.style.opacity = (1 - t).toFixed(3);
     L.el.style.filter = t > 0.01 ? `blur(${(L.blur * t).toFixed(1)}px)` : "";
   });
-  cover.style.setProperty("--fog", (1 - ease(clamp01(p / 0.6))).toFixed(3));
+  cover.style.setProperty("--fog", (1 - ease(clamp01((p - 0.15) / 0.6))).toFixed(3));
   cover.classList.toggle("is-gone", p > 0.995);
   // 구름이 반쯤 걷히면 타이틀·버튼이 페이드 인
-  if (!contactRevealed && p > 0.45) {
+  if (!contactRevealed && p > 0.55) {
     contactRevealed = true;
     $(".contact__title").classList.add("is-in");
     $(".contact__list").classList.add("is-in");
@@ -411,7 +408,7 @@ window.addEventListener("resize", readScroll);
 // 처음 들어왔을 때(예: 주소가 #contact)는 바로 그 상태로
 (function initClouds() {
   const vh = window.innerHeight;
-  currentP = targetP = clamp01((vh * 0.45 - contactEl.getBoundingClientRect().top) / (vh * 0.45));
+  currentP = targetP = clamp01((vh * 0.3 - contactEl.getBoundingClientRect().top) / (vh * 0.3));
   applyClouds(currentP);
 })();
 
