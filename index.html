@@ -1,465 +1,281 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>느긋한 편집실 | Capybara's Tiny Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
-    <style>
-:root {
-    --color-bg-ivory: #FAF5EE;
-    --color-bg-mint: #A5BAAA;
-    --color-bg-red: #D35441;
-    --color-card-bg: #FFFFFF;
-    --color-text-dark: #29352F;
-    --color-accent-coral: #F34468;
-    --font-heading: 'Nanum Pen Script', cursive;
-    --font-body: 'Gowun Dodum', sans-serif;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARU's Pond · Creative Portfolio</title>
+  <meta name="description" content="작은 아이디어가 자라는 곳, ARU's Pond — 영상 · 디자인 · 모션 포트폴리오" />
+  <meta name="theme-color" content="#F2F6FF" />
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background-color: var(--color-bg-ivory); color: var(--color-text-dark); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; }
-a { text-decoration: none; color: inherit; }
+  <!-- 탭 아이콘 (파비콘) -->
+  <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
+  <link rel="apple-touch-icon" href="./assets/images/apple-touch-icon.png" />
 
-.header { flex-wrap: wrap; gap: 14px; display: flex; justify-content: space-between; align-items: center; padding: 24px 60px; background-color: var(--color-bg-ivory); position: sticky; top: 0; z-index: 100; }
-.logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; }
-.logo-dot { width: 10px; height: 10px; background-color: var(--color-accent-coral); border-radius: 50%; }
-.nav-menu { flex-wrap: wrap; display: flex; gap: 32px; font-size: 0.95rem; color: #666; }
-.nav-menu a.active, .nav-menu a:hover { color: var(--color-accent-coral); font-weight: bold; border-bottom: 2px solid var(--color-accent-coral); padding-bottom: 2px; }
+  <!-- 링크 미리보기 (카톡·인스타·슬랙 등)
+       ✏️ 배포 후 아래 두 곳의 "https://내아이디.github.io/저장소이름/" 를 실제 사이트 주소로 바꾸세요. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ARU's Pond · Creative Portfolio" />
+  <meta property="og:description" content="작은 아이디어가 자라는 곳 — 영상 · 디자인 · 모션 포트폴리오" />
+  <meta property="og:url" content="https://내아이디.github.io/저장소이름/" />
+  <meta property="og:image" content="https://내아이디.github.io/저장소이름/assets/images/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+  <!-- 폰트: Poppins(타이틀·메뉴), Fredoka / Fredoka One(본문·버튼), Pretendard(한글) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Fredoka+One&family=Poppins:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 
-.hero-section { display: grid; grid-template-columns: 1fr 1fr; padding: 60px 80px; align-items: center; min-height: calc(100vh - 80px); }
-.sub-title { font-family: var(--font-heading); color: var(--color-accent-coral); font-size: 1.5rem; letter-spacing: 1px; display: block; margin-bottom: 12px; }
-.hero-text h1 { font-family: var(--font-heading); font-size: 4rem; line-height: 1.2; margin-bottom: 24px; }
-.hero-text p { font-size: 1.1rem; color: #555; margin-bottom: 32px; }
-.btn-primary { display: inline-block; padding: 12px 28px; border: 1px solid var(--color-text-dark); border-radius: 30px; transition: all 0.2s; }
-.btn-primary:hover { background-color: var(--color-text-dark); color: #fff; }
-
-.hero-image { position: relative; display: flex; justify-content: center; align-items: center; }
-.circle-bg { position: absolute; width: 380px; height: 480px; background-color: #F3C68F; border-radius: 200px 200px 30px 30px; z-index: 1; }
-.hero-image img { position: relative; z-index: 2; width: 360px; border-radius: 12px; }
-
-.routine-section { background-color: var(--color-bg-mint); padding: 100px 80px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; }
-.small-badge { font-family: var(--font-heading); font-size: 1.2rem; color: #29352F; background: rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 16px; }
-.routine-title-box h2 { font-family: var(--font-heading); font-size: 3.5rem; line-height: 1.2; color: #29352F; }
-.routine-steps { display: flex; flex-direction: column; gap: 32px; }
-.step-item { display: flex; gap: 24px; align-items: flex-start; }
-.step-num { font-family: var(--font-heading); font-size: 1.8rem; color: #555; }
-.step-desc strong { font-size: 1.1rem; display: block; margin-bottom: 4px; color: #29352F; }
-
-.film-section { background-color: var(--color-bg-red); padding: 100px 80px; color: #fff; display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center; }
-.film-badge { font-family: var(--font-heading); font-size: 1.2rem; color: #FFD1CD; display: block; margin-bottom: 12px; }
-.film-text h2 { font-family: var(--font-heading); font-size: 3.5rem; line-height: 1.2; margin-bottom: 16px; }
-.video-container video { width: 100%; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); background: #000; }
-
-.gallery-header { text-align: center; padding: 60px 20px 40px; }
-.gallery-header h2 { font-family: var(--font-heading); font-size: 3.5rem; margin-bottom: 10px; }
-.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; max-width: 1100px; margin: 0 auto 100px; padding: 0 20px; }
-.gallery-card { cursor: pointer; transition: transform 0.2s; }
-.gallery-card:hover { transform: translateY(-5px); }
-
-/* 머그컵 형태의 썸네일 프레임 (이미지 비율 유지 및 깔끔한 출력) */
-.image-frame { width: 100%; height: 380px; background: #FAF5EE; border-radius: 24px; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 2px solid #e5dccf; }
-.image-frame img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
-
-.card-info { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 0 10px; }
-.card-tag { font-family: var(--font-heading); color: var(--color-accent-coral); font-size: 1.2rem; }
-.card-num { font-size: 1rem; color: #777; }
-.card-title { font-family: var(--font-heading); font-size: 2rem; margin-top: 4px; padding: 0 10px; }
-
-.contact-wrapper { display: grid; grid-template-columns: 1.2fr 1fr; background-color: var(--color-bg-mint); min-height: calc(100vh - 160px); padding: 80px; align-items: center; }
-.contact-left h2 { font-family: var(--font-heading); font-size: 4rem; line-height: 1.2; margin-bottom: 24px; color: #29352F; }
-.contact-left p { font-size: 1.1rem; margin-bottom: 32px; color: #3b4a43; }
-.email-link { font-family: var(--font-heading); font-size: 2.2rem; display: inline-block; border-bottom: 2px solid #29352F; padding-bottom: 4px; margin-bottom: 40px; color: #29352F; }
-.social-links { display: flex; gap: 24px; font-size: 0.95rem; color: #3b4a43; }
-.contact-memo { text-align: center; font-family: var(--font-heading); font-size: 1.4rem; margin-top: 20px; color: #29352F; }
-
-/* 모달 팝업 */
-.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
-.modal.active { display: flex; }
-.modal-content { max-height: 92vh; overflow-y: auto; background-color: #FAF5EE; width: 850px; border-radius: 12px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 4px solid var(--color-accent-coral); overflow: hidden; }
-.modal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 1.8rem; cursor: pointer; z-index: 10; color: #555; }
-.modal-body { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; }
-.modal-img-wrap { height: 400px; background: #fff; display: flex; align-items: center; justify-content: center; }
-.modal-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
-.modal-text-wrap { padding: 40px; }
-.modal-text-wrap h3 { font-family: var(--font-heading); font-size: 2.6rem; line-height: 1.2; margin: 10px 0 20px; }
-.modal-text-wrap p { font-size: 0.95rem; color: #555; margin-bottom: 30px; }
-.modal-pagination { display: flex; align-items: center; gap: 20px; }
-.page-arrow { background: none; border: 1px solid #ccc; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.page-arrow:hover { background: var(--color-text-dark); color: #fff; border-color: var(--color-text-dark); }
-
-.footer { display: flex; justify-content: space-between; align-items: center; padding: 30px 60px; background-color: var(--color-bg-ivory); border-top: 1px solid #e5dccf; font-size: 0.9rem; color: #777; }
-
-@media (max-width: 900px) {
-    .hero-section, .routine-section, .film-section, .contact-wrapper { grid-template-columns: 1fr; padding: 40px 20px; }
-    .gallery-grid { grid-template-columns: 1fr; }
-    .header { padding: 20px; }
-    .modal-content { width: 90%; }
-    .modal-body { grid-template-columns: 1fr; }
-}
-
-</style>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
 
-    <!-- 상단 헤더 -->
-    <header class="header">
-        <div class="logo">
-            <span class="logo-dot"></span>
-            <a href="#home" class="nav-link" data-target="home">느긋한 편집실</a>
+  <!-- ===== 상단 메뉴 (어느 화면에서든 바로 이동) ===== -->
+  <header class="nav" id="nav">
+    <a class="nav__item" href="#home" data-nav="home">
+      <span class="nav__icon">
+        <img class="nav__face" src="./assets/images/nav-home.png" alt="" />
+        <svg class="nav__line" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M8 21 24 8l16 13v17a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3Z" />
+          <path d="M24 33s-7-4.2-7-8.6a3.6 3.6 0 0 1 7-1.2 3.6 3.6 0 0 1 7 1.2c0 4.4-7 8.6-7 8.6Z" />
+        </svg>
+      </span>
+      <span class="nav__label">HOME</span>
+    </a>
+    <a class="nav__item" href="#work" data-nav="work">
+      <span class="nav__icon">
+        <img class="nav__face" src="./assets/images/nav-work.png" alt="" />
+        <svg class="nav__line" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M26 39H10a3 3 0 0 1-3-3V12a3 3 0 0 1 3-3h9l4 5h15a3 3 0 0 1 3 3v8" />
+          <path d="M7 19h34" />
+          <path d="M36 42s-7-4.2-7-8.6a3.6 3.6 0 0 1 7-1.2 3.6 3.6 0 0 1 7 1.2c0 4.4-7 8.6-7 8.6Z" />
+        </svg>
+      </span>
+      <span class="nav__label">WORK</span>
+    </a>
+    <a class="nav__item" href="#contact" data-nav="contact">
+      <span class="nav__icon">
+        <img class="nav__face" src="./assets/images/nav-contact.png" alt="" />
+        <svg class="nav__line" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M10 8h28a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H19l-9 7v-7a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3Z" />
+          <path d="M24 28s-7-4.2-7-8.6a3.6 3.6 0 0 1 7-1.2 3.6 3.6 0 0 1 7 1.2c0 4.4-7 8.6-7 8.6Z" />
+        </svg>
+      </span>
+      <span class="nav__label">CONTACT</span>
+    </a>
+  </header>
+
+  <!-- ===================== 메인 (원페이지) ===================== -->
+  <main id="mainView" class="view is-active">
+
+    <!-- ===== HOME ===== -->
+    <section class="section home" id="home">
+      <div class="home__inner">
+        <div class="home__text">
+          <h1 class="home__title">
+            <span>CURIOUS</span>
+            <span class="pink">PLAYFUL</span>
+            <span>CREATIVE</span>
+          </h1>
+          <p class="home__desc">
+            새로운 것을 발견하고, 익숙한 것을 다르게 바라보는 걸 좋아합니다.<br />
+            다양한 아이디어에 저만의 시선과 재미를 더해 영상과 디자인으로 표현합니다.
+          </p>
+
+          <div class="tools">
+            <h2 class="tools__title">MY TOOLS</h2>
+            <ul class="tools__list">
+              <li><img src="./assets/images/tool-ai.png" alt="Adobe Illustrator" /><span>Illustrator</span></li>
+              <li><img src="./assets/images/tool-ps.png" alt="Adobe Photoshop" /><span>Photoshop</span></li>
+              <li><img src="./assets/images/tool-pr.png" alt="Adobe Premiere Pro" /><span>Premiere</span></li>
+              <li><img src="./assets/images/tool-ae.png" alt="Adobe After Effects" /><span>After Effects</span></li>
+              <li><img src="./assets/images/tool-figma.png" alt="Figma" /><span>Figma</span></li>
+              <li><img src="./assets/images/tool-notion.png" alt="Notion" /><span>Notion</span></li>
+            </ul>
+          </div>
         </div>
-        <nav class="nav-menu">
-            <a href="#home" class="nav-link active" data-target="home">홈</a>
-            <a href="#gallery" class="nav-link" data-target="gallery">사진첩</a>
-            <a href="#contact" class="nav-link" data-target="contact">컨택트</a>
-        </nav>
-    </header>
 
-    <main>
-        <!-- [HOME 탭] -->
-        <section id="home" class="tab-content active">
-            <div class="hero-section">
-                <div class="hero-text">
-                    <span class="sub-title">CAPYBARA'S TINY STUDIO</span>
-              <h1>천천히 만들어도,<br>이야기는 반짝이니까.</h1>
-              <p>커피 향과 오후의 햇살이 머무는 곳.<br>카피바라의 작고 다정한 영상 작업실입니다.</p>
-                    <a href="#gallery" class="btn-primary nav-link" data-target="gallery">작업 구경하기 →</a>
-                </div>
-                <div class="hero-image">
-                    <div class="circle-bg"></div>
-                    <img src="assets/capybara-main.png" alt="카피바라 일러스트">
-                </div>
-            </div>
-
-            <div class="routine-section">
-                <div class="routine-title-box">
-                    <span class="small-badge">A SMALL ROUTINE</span>
-                 <h2>한 편의 영상이<br>완성되는 느린 하루</h2>
-                </div>
-                <div class="routine-steps">
-                    <div class="step-item">
-                        <span class="step-num">01</span>
-                        <div class="step-desc">
-                        <strong>떠올리기</strong>
-                   <p>노트에 엉뚱하고 귀여운 생각을 마음껏 그려요.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <span class="step-num">02</span>
-                        <div class="step-desc">
-                       <strong>이어 붙이기</strong>
-                   <p>장면과 음악이 자연스럽게 만날 때까지 다듬어요.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <span class="step-num">03</span>
-                        <div class="step-desc">
-                       <strong>기분 좋게 끝내기</strong>
-                   <p>마지막 색을 입히고 따뜻한 커피로 축하해요.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="film-section">
-                <div class="film-text">
-                    <span class="film-badge">TODAY'S FILM</span>
-              <h2>포근한 작업실의<br>어느 하루</h2>
-              <p>재생 버튼을 눌러 카피바라의 조용한 작업 시간을 만나 보세요.</p>
-                </div>
-                <div class="video-container">
-                    <video controls poster="assets/capybara-desk.png">
-                        <source src="assets/film.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
-        </section>
-
-        <!-- [GALLERY 탭 - 8개 작품 연동] -->
-        <section id="gallery" class="tab-content">
-            <div class="gallery-header">
-                <span class="sub-title">CAPYBARA'S ALBUM</span>
-           <h2>느긋한 하루의 장면들</h2>
-          <p>좋아하는 장면을 누르면 그날의 이야기가 열립니다.</p>
-            </div>
-
-            <div class="gallery-grid">
-                <!-- 1 -->
-                <div class="gallery-card" data-id="1">
-                    <div class="image-frame">
-                        <img src="assets/thumb-1.png" alt="노트북 앞의 시간">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">IDEA TIME</span>
-                        <span class="card-num">01</span>
-                    </div>
-                    <h3 class="card-title">노트북 앞의 작은 여유</h3>
-                </div>
-                <!-- 2 -->
-                <div class="gallery-card" data-id="2">
-                    <div class="image-frame">
-                        <img src="assets/thumb-2.png" alt="초록 한 모금">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">BOTANICAL</span>
-                        <span class="card-num">02</span>
-                    </div>
-                    <h3 class="card-title">오늘도 초록 한 모금</h3>
-                </div>
-                <!-- 3 -->
-                <div class="gallery-card" data-id="3">
-                    <div class="image-frame">
-                        <img src="assets/thumb-3.png" alt="싱그러운 순간">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">REFRESH</span>
-                        <span class="card-num">03</span>
-                    </div>
-                    <h3 class="card-title">가장 싱그러운 순간</h3>
-                </div>
-                <!-- 4 -->
-                <div class="gallery-card" data-id="4">
-                    <div class="image-frame">
-                        <img src="assets/thumb-4.png" alt="뒷모습의 이야기">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">STORY</span>
-                        <span class="card-num">04</span>
-                    </div>
-                    <h3 class="card-title">기다림의 뒷모습</h3>
-                </div>
-                <!-- 5 -->
-                <div class="gallery-card" data-id="5">
-                    <div class="image-frame">
-                        <img src="assets/thumb-5.png" alt="달빛 아래 성">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">FANTASY</span>
-                        <span class="card-num">05</span>
-                    </div>
-                    <h3 class="card-title">달빛 아래 판타지 성</h3>
-                </div>
-                <!-- 6 -->
-                <div class="gallery-card" data-id="6">
-                    <div class="image-frame">
-                        <img src="assets/thumb-6.png" alt="차세대 비전">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">VISION</span>
-                        <span class="card-num">06</span>
-                    </div>
-                    <h3 class="card-title">새로운 산업과 진화</h3>
-                </div>
-                <!-- 7 -->
-                <div class="gallery-card" data-id="7">
-                    <div class="image-frame">
-                        <img src="assets/thumb-7.png" alt="책 읽는 부엉이">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">STUDY</span>
-                        <span class="card-num">07</span>
-                    </div>
-                    <h3 class="card-title">지혜로운 배움의 숲</h3>
-                </div>
-                <!-- 8 -->
-                <div class="gallery-card" data-id="8">
-                    <div class="image-frame">
-                        <img src="assets/thumb-8.png" alt="데일리 아카이브">
-                    </div>
-                    <div class="card-info">
-                        <span class="card-tag">ARCHIVE</span>
-                        <span class="card-num">08</span>
-                    </div>
-                    <h3 class="card-title">나만의 소중한 기록</h3>
-                </div>
-            </div>
-        </section>
-
-        <!-- [CONTACT 탭] -->
-        <section id="contact" class="tab-content">
-            <div class="contact-wrapper">
-                <div class="contact-left">
-                    <span class="sub-title">SAY HELLO</span>
-               <h2>같이 느긋하고<br>재미있는 걸 만<br>들어요.</h2>
-               <p>수업, 프로젝트, 새로운 아이디어에 관한 이야기를 기다리고 있어요.</p>
-                    <span class="email-link">연락처 입력 예정</span>
-                    <div class="social-links">
-                        <span>Instagram (링크 준비 중)</span>
-                        <span>YouTube (링크 준비 중)</span>
-                        <span>Portfolio (링크 준비 중)</span>
-                    </div>
-                </div>
-                <div class="contact-right">
-                    <div class="image-frame">
-                        <img src="assets/capybara-desk.png" alt="작업실 풍경">
-                    </div>
-                    <p class="contact-memo">답장은 커피 한 잔을 마신 뒤, 천천히 보내드릴게요.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- 상세 팝업 모달 -->
-    <div id="photoModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <div class="modal-body">
-                <div class="modal-img-wrap">
-                    <img id="modalImg" src="" alt="모달 이미지">
-                </div>
-                <div class="modal-text-wrap">
-                    <span id="modalCategory" class="sub-title">SCENE 01 · IDEA TIME</span>
-                    <h3 id="modalTitle">제목</h3>
-                    <p id="modalDesc">설명 내용이 들어갑니다.</p>
-                    <div class="modal-pagination">
-                        <button id="prevBtn" class="page-arrow">←</button>
-                        <span id="pageIndicator">01 / 08</span>
-                        <button id="nextBtn" class="page-arrow">→</button>
-                    </div>
-                </div>
-            </div>
+        <div class="home__aru" aria-hidden="true">
+          <img class="aru-wave aru-wave--1" src="./assets/images/aru-wave-1.png" alt="" />
+          <img class="aru-wave aru-wave--2" src="./assets/images/aru-wave-2.png" alt="" />
         </div>
-    </div>
+      </div>
 
+      <!-- 스크롤 힌트 -->
+      <a class="scroll-hint" href="#work" aria-label="아래로 스크롤">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+      </a>
+    </section>
+
+    <!-- ===== WORK ===== -->
+    <section class="section work" id="work">
+      <img class="cloud cloud--left" src="./assets/images/cloud-left.png" alt="" aria-hidden="true" />
+      <img class="cloud cloud--right" src="./assets/images/cloud-right.png" alt="" aria-hidden="true" />
+      <h2 class="section-title work__title split">EXPLORE MY <span class="pink">WORK</span></h2>
+
+      <div class="category">
+        <a class="category__card" href="#video">
+          <span class="sparkle" aria-hidden="true"><i></i><i></i><i></i></span>
+          <svg class="category__icon" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="8" y="9" width="48" height="33" rx="3" />
+            <path d="M32 42v9M21 52h22" />
+            <path class="pink-stroke" d="M27 19.5v13l11-6.5Z" />
+          </svg>
+          <span class="category__label">VIDEO</span>
+        </a>
+        <a class="category__card" href="#design">
+          <span class="sparkle" aria-hidden="true"><i></i><i></i><i></i></span>
+          <svg class="category__icon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 7C18 7 8 17.5 8 30.5S18.5 56 30 56c4 0 5-2.6 3.5-5.4-1.6-3-.3-6.6 4-6.6H44c7 0 12-4.5 12-11.5C56 18 45.5 7 32 7Z" />
+            <circle class="dot dot--purple" cx="20" cy="27" r="2.6" />
+            <circle class="dot dot--pink" cx="27" cy="17" r="2.6" />
+            <circle class="dot dot--yellow" cx="39" cy="16" r="2.6" />
+            <circle class="dot dot--green" cx="47" cy="25" r="2.6" />
+            <circle class="dot dot--blue" cx="18" cy="38" r="2.6" />
+          </svg>
+          <span class="category__label">DESIGN</span>
+        </a>
+        <a class="category__card" href="#motion">
+          <span class="sparkle" aria-hidden="true"><i></i><i></i><i></i></span>
+          <svg class="category__icon" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="11" y="27" width="44" height="26" rx="3" />
+            <path d="M10.5 19.8 50.3 9.2a2 2 0 0 1 2.4 1.4l1.2 4.5L12.4 26.2l-1.2-4.5a1.6 1.6 0 0 1-.7-1.9Z" />
+            <path d="m24 16.4 5.2 6.6M36.6 13l5.2 6.6" />
+          </svg>
+          <span class="category__label">MOTION</span>
+        </a>
+      </div>
+
+      <img class="work__aru" src="./assets/images/aru-laptop.png" alt="노트북으로 작업하는 아루" />
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section class="section contact" id="contact">
+      <!-- WORK 구름이 이어지다가 스크롤하면 양옆으로 걷히는 구름 -->
+      <div class="cloud-cover" id="cloudCover" aria-hidden="true">
+        <img class="cc cc--top-left"  src="./assets/images/cloud-left.png" alt="" />
+        <img class="cc cc--top-right" src="./assets/images/cloud-right.png" alt="" />
+        <img class="cc cc--mid-left"  src="./assets/images/cloud-left.png" alt="" />
+        <img class="cc cc--mid-right" src="./assets/images/cloud-right.png" alt="" />
+      </div>
+      <div class="stars" aria-hidden="true">
+        <span class="star star--yel is-m" style="--x:22%;--y:40%;--s:72px;--d:1.2s;--mx:90%;--my:9%"></span>
+        <span class="star star--lav" style="--x:27%;--y:22%;--s:40px;--d:0.6s"></span>
+        <span class="star star--lav is-m" style="--x:84%;--y:18%;--s:50px;--d:0.9s;--mx:10%;--my:26%"></span>
+        <span class="star star--yel" style="--x:78%;--y:41%;--s:42px;--d:0.2s"></span>
+        <span class="star star--lav is-m" style="--x:12%;--y:38%;--s:44px;--d:1.4s;--mx:92%;--my:64%"></span>
+        <span class="star star--yel is-m" style="--x:89%;--y:50%;--s:44px;--d:0.7s;--mx:7%;--my:70%"></span>
+        <span class="star star--yel" style="--x:9%;--y:76%;--s:40px;--d:1.0s"></span>
+        <span class="star star--yel is-m" style="--x:68%;--y:72%;--s:34px;--d:1.7s;--mx:86%;--my:80%"></span>
+        <span class="star star--dot is-m" style="--x:14%;--y:13%;--s:10px;--d:0.0s;--mx:12%;--my:12%"></span>
+        <span class="star star--dot" style="--x:62%;--y:12%;--s:9px;--d:0.3s"></span>
+        <span class="star star--dot" style="--x:77%;--y:8%;--s:9px;--d:1.5s"></span>
+        <span class="star star--dot" style="--x:60%;--y:40%;--s:9px;--d:1.8s"></span>
+        <span class="star star--dot is-m" style="--x:79%;--y:33%;--s:8px;--d:1.1s;--mx:94%;--my:40%"></span>
+        <span class="star star--dot" style="--x:86%;--y:36%;--s:8px;--d:0.5s"></span>
+        <span class="star star--dot is-m" style="--x:16%;--y:55%;--s:9px;--d:1.9s;--mx:5%;--my:50%"></span>
+        <span class="star star--dot" style="--x:92%;--y:80%;--s:8px;--d:0.4s"></span>
+        <span class="star star--dot" style="--x:35%;--y:68%;--s:9px;--d:0.9s"></span>
+      </div>
+      <h2 class="section-title contact__title split">LET'S <span class="pink">CONNECT</span></h2>
+
+      <div class="contact__list">
+        <a class="contact__btn" id="btnYoutube" data-pose="youtube" href="#" target="_blank" rel="noopener">
+          <svg class="contact__icon contact__icon--yt" viewBox="0 0 80 52" aria-hidden="true">
+            <rect x="3" y="3" width="74" height="46" rx="10" />
+            <path d="M33 16v20l16-10Z" />
+          </svg>
+          <span class="contact__label">YOUTUBE</span>
+        </a>
+        <a class="contact__btn" id="btnInstagram" data-pose="instagram" href="#" target="_blank" rel="noopener">
+          <svg class="contact__icon" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="5" y="5" width="54" height="54" rx="14" />
+            <circle cx="32" cy="33" r="12" />
+            <circle class="pink-fill" cx="47" cy="17" r="3.2" />
+          </svg>
+          <span class="contact__label">INSTAGRAM</span>
+        </a>
+        <div class="contact__mail">
+          <button class="contact__btn contact__btn--mail" id="btnMail" data-pose="mail" type="button" aria-label="메일 주소 보기">
+            <svg class="contact__icon contact__icon--mail" viewBox="0 0 72 52" aria-hidden="true">
+              <rect x="3" y="3" width="66" height="46" rx="5" />
+              <path d="m6 7 30 22L66 7" />
+            </svg>
+            <span class="contact__label contact__swap">
+              <span class="swap__text swap__text--label">MAIL</span>
+              <span class="swap__text swap__text--mail" id="mailText"></span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 버튼에 따라 바뀌는 아루 -->
+      <div class="contact__aru" id="contactAru" role="img" aria-label="편지를 들고 있는 아루">
+        <img class="aru-pose is-active" data-pose="letter" src="./assets/images/aru-letter.png" alt="" />
+        <img class="aru-pose" data-pose="youtube" src="./assets/images/aru-youtube.png" alt="" />
+        <img class="aru-pose" data-pose="instagram" src="./assets/images/aru-instagram.png" alt="" />
+        <img class="aru-pose" data-pose="mail" src="./assets/images/aru-mail.png" alt="" />
+      </div>
+      <span class="aru-shadow" aria-hidden="true"></span>
+    </section>
+
+    <!-- 푸터 -->
     <footer class="footer">
-        <div class="logo">
-            <span class="logo-dot"></span>
-         <span>느긋한 편집실</span>
-        </div>
-        <p>© 2026 SLOW STUDIO</p>
+      <p>© <span id="year">2026</span> ARU's Pond. All rights reserved.</p>
     </footer>
+  </main>
 
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // 탭 전환
-    const navLinks = document.querySelectorAll('.nav-link');
-    const tabContents = document.querySelectorAll('.tab-content');
+  <!-- ============ WORK 하위 화면: 갤러리 (Video / Design / Motion Works) ============ -->
+  <section id="galleryView" class="view sub" aria-live="polite">
+    <a class="back" href="#work" data-back>
+      <span class="back__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 12H4M10 6l-6 6 6 6" /></svg>
+      </span>
+      BACK
+    </a>
+    <div class="sub__head">
+      <h2 class="sub__title split" id="galleryTitle"></h2>
+      <!-- 카테고리 이동 탭 -->
+      <nav class="tabs" aria-label="작업 카테고리">
+        <a class="tabs__item" href="#video" data-cat="video">VIDEO</a>
+        <a class="tabs__item" href="#design" data-cat="design">DESIGN</a>
+        <a class="tabs__item" href="#motion" data-cat="motion">MOTION</a>
+      </nav>
+    </div>
+    <div class="gallery" id="galleryGrid"></div>
+  </section>
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('data-target');
+  <!-- ============ 작업물 상세 화면 ============ -->
+  <section id="detailView" class="view sub" aria-live="polite">
+    <a class="back" href="#work" id="detailBack">
+      <span class="back__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 12H4M10 6l-6 6 6 6" /></svg>
+      </span>
+      BACK
+    </a>
+    <div class="detail">
+      <div class="detail__media" id="detailMedia"></div>
+      <div class="detail__side">
+        <p class="detail__cat" id="detailCat"></p>
+        <h2 class="detail__title split" id="detailTitle"></h2>
+        <!-- 이전 / 다음 작업으로 이동 -->
+        <div class="pager">
+          <a class="pager__btn pager__btn--prev" id="detailPrev" href="#">
+            <span class="pager__arrow" aria-hidden="true">←</span>
+            <span class="pager__text"><small>PREV</small><b id="detailPrevName"></b></span>
+          </a>
+          <a class="pager__btn pager__btn--next" id="detailNext" href="#">
+            <span class="pager__text"><small>NEXT</small><b id="detailNextName"></b></span>
+            <span class="pager__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+        <p class="detail__count" id="detailCount"></p>
+      </div>
+    </div>
+  </section>
 
-            tabContents.forEach(tab => {
-                tab.classList.remove('active');
-                if(tab.id === targetId) tab.classList.add('active');
-            });
-
-            navLinks.forEach(nav => nav.classList.remove('active'));
-            document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(el => {
-                el.classList.add('active');
-            });
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    });
-
-    // 갤러리 모달 데이터 (8종 에셋 완벽 연동)
-    const galleryCards = document.querySelectorAll('.gallery-card');
-    const modal = document.getElementById('photoModal');
-    const modalClose = document.querySelector('.modal-close');
-    const modalImg = document.getElementById('modalImg');
-    const modalCategory = document.getElementById('modalCategory');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const pageIndicator = document.getElementById('pageIndicator');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    const galleryData = [
-        {
-            category: "SCENE 01 · IDEA TIME",
-            title: "노트북 앞의 작은 여유",
-            desc: "창가에 앉아 노트북으로 아이디어를 스케치하고 기록하는 따뜻한 작업 시간입니다.",
-            img: "assets/thumb-1.png"
-        },
-        {
-            category: "SCENE 02 · BOTANICAL",
-            title: "오늘도 초록 한 모금",
-            desc: "싱그러운 민트와 자연의 청량함을 담아 기분 좋은 활력을 불어넣습니다.",
-            img: "assets/thumb-2.png"
-        },
-        {
-            category: "SCENE 03 · REFRESH",
-            title: "가장 싱그러운 순간",
-            desc: "햇살이 내리쬐는 나무 테이블 위, 레몬과 허브가 전해주는 상쾌한 휴식입니다.",
-            img: "assets/thumb-3.png"
-        },
-        {
-            category: "SCENE 04 · STORY",
-            title: "기다림의 뒷모습",
-            desc: "고요한 창가에서 깊은 생각에 잠겨 새로운 이야기를 준비하는 차분한 여운입니다.",
-            img: "assets/thumb-4.png"
-        },
-        {
-            category: "SCENE 05 · FANTASY",
-            title: "달빛 아래 판타지 성",
-            desc: "밤하늘의 별과 신비로운 성이 어우러져 상상력을 무한히 펼치게 만드는 세계입니다.",
-            img: "assets/thumb-5.png"
-        },
-        {
-            category: "SCENE 06 · VISION",
-            title: "새로운 산업과 진화",
-            desc: "구름 위로 펼쳐지는 광활한 풍경 속에서 미래의 비전과 가능성을 그려봅니다.",
-            img: "assets/thumb-6.png"
-        },
-        {
-            category: "SCENE 07 · STUDY",
-            title: "지혜로운 배움의 숲",
-            desc: "책을 펼치고 지식을 탐구하는 부엉이처럼, 매일 새롭게 성장하는 배움의 즐거움입니다.",
-            img: "assets/thumb-7.png"
-        },
-        {
-            category: "SCENE 08 · ARCHIVE",
-            title: "나만의 소중한 기록",
-            desc: "레이스 패브릭과 드라이플라워 곁에서 차곡차곡 쌓아가는 일상 아카이브입니다.",
-            img: "assets/thumb-8.png"
-        }
-    ];
-
-    let currentIndex = 0;
-
-    function updateModal(index) {
-        const item = galleryData[index];
-        modalImg.src = item.img;
-        modalCategory.textContent = item.category;
-        modalTitle.textContent = item.title;
-        modalDesc.textContent = item.desc;
-        pageIndicator.textContent = `0${index + 1} / 0${galleryData.length}`;
-        currentIndex = index;
-    }
-
-    galleryCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const id = parseInt(card.getAttribute('data-id')) - 1;
-            updateModal(id);
-            modal.classList.add('active');
-        });
-    });
-
-    modalClose.addEventListener('click', () => {
-        modal.classList.remove('active');
-    });
-
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.remove('active');
-    });
-
-    prevBtn.addEventListener('click', () => {
-        let newIndex = (currentIndex - 1 + galleryData.length) % galleryData.length;
-        updateModal(newIndex);
-    });
-
-    nextBtn.addEventListener('click', () => {
-        let newIndex = (currentIndex + 1) % galleryData.length;
-        updateModal(newIndex);
-    });
-});
-
-</script>
+  <script src="./script.js"></script>
 </body>
 </html>
