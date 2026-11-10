@@ -126,7 +126,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 /* ---------------- HOME ---------------- */
-.home { display: flex; align-items: center; }
+.home {
+  display: flex;
+  align-items: center;
+  /* 아래로 갈수록 WORK 배경색으로 자연스럽게 이어짐 */
+  background: linear-gradient(to bottom, var(--white) 0%, var(--white) 55%, var(--cloud-sky) 100%);
+}
 .home__inner {
   width: 100%;
   display: flex;
