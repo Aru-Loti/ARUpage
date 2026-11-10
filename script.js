@@ -56,16 +56,24 @@ function splitLetters(el) {
   const walk = (node) => {
     [...node.childNodes].forEach((child) => {
       if (child.nodeType === 3) {
+        // 단어 단위로 묶어서 줄바꿈이 단어 중간에서 일어나지 않게
         const frag = document.createDocumentFragment();
-        [...child.textContent].forEach((char) => {
-          const s = document.createElement("span");
-          s.className = char === " " ? "ch is-space" : "ch";
-          s.textContent = char === " " ? "\u00a0" : char;
-          s.style.setProperty("--i", i++);
-          frag.appendChild(s);
+        child.textContent.split(/( )/).forEach((part) => {
+          if (!part) return;
+          if (part === " ") { frag.appendChild(document.createTextNode(" ")); return; }
+          const word = document.createElement("span");
+          word.className = "word";
+          [...part].forEach((char) => {
+            const s = document.createElement("span");
+            s.className = "ch";
+            s.textContent = char;
+            s.style.setProperty("--i", i++);
+            word.appendChild(s);
+          });
+          frag.appendChild(word);
         });
         child.replaceWith(frag);
-      } else if (child.nodeType === 1 && !child.classList.contains("ch")) {
+      } else if (child.nodeType === 1 && !child.classList.contains("ch") && !child.classList.contains("word")) {
         walk(child);
       }
     });
@@ -228,21 +236,18 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 /* ---------- HOME: 아루 손 흔들기 ---------- */
 const aru = $(".home__aru");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if (aru && !reduceMotion) {
-  setInterval(() => aru.classList.toggle("is-wave"), 480);
-}
+// (손 흔들기는 CSS 스프라이트 애니메이션으로 처리)
 
 /* ---------- WORK: 화면에 들어오면 타이틀·아루 등장 ---------- */
 const workSection = $("#work");
 if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver(
     (entries) => entries.forEach((en) => {
-      if (en.isIntersecting) {
-        en.target.classList.add("is-visible");
-        io.unobserve(en.target);
-      }
+      // 들어올 때마다 다시 재생: 화면에 보이면 켜고, 완전히 벗어나면 초기화
+      if (en.intersectionRatio >= 0.3) en.target.classList.add("is-visible");
+      else if (en.intersectionRatio < 0.08) en.target.classList.remove("is-visible");
     }),
-    { threshold: 0.3 }
+    { threshold: [0, 0.08, 0.3] }
   );
   io.observe(workSection);
   io.observe($("#contact"));
@@ -332,23 +337,30 @@ $("#detailMedia").addEventListener("touchend", (e) => {
   location.hash = $(dx < 0 ? "#detailNext" : "#detailPrev").getAttribute("href");
 }, { passive: true });
 
-/* ---------- 메인: 스크롤하면 글자·요소가 나타남 ---------- */
+/* ---------- 메인: 스크롤하면 글자·요소가 나타남 (들어올 때마다) ---------- */
+// 화면 밖에서는 즉시 투명하게 되돌려 두기 (다음에 들어올 때 처음부터 페이드 인)
+function resetFade(el) {
+  el.classList.add("no-anim");
+  el.classList.remove("is-in");
+  void el.offsetWidth;
+  el.classList.remove("no-anim");
+}
 $$(".work__title, .contact__title").forEach((el) => splitLetters(el));
-$$(".home__desc, .tools, .contact__list").forEach((el) => el.classList.add("reveal"));
-$(".contact__list").style.setProperty("--rd", ".35s");
-$(".home__desc").style.setProperty("--rd", ".45s");
-$(".tools").style.setProperty("--rd", ".6s");
+// 큰 제목만 페이드 인 (소개 문구·툴·버튼은 그대로 보임)
+$(".home__title").classList.add("reveal");
 if ("IntersectionObserver" in window) {
   const revealIO = new IntersectionObserver(
     (entries) => entries.forEach((en) => {
-      if (en.isIntersecting) {
+      // 들어올 때마다 다시 페이드 인, 화면 밖으로 나가면 초기화
+      if (en.isIntersecting && en.intersectionRatio >= 0.2) {
+        if (en.target === $(".home__title") && document.body.classList.contains("is-loading")) return; // 로딩 중엔 대기
         en.target.classList.add("is-in");
-        revealIO.unobserve(en.target);
       }
+      else if (!en.isIntersecting) resetFade(en.target);
     }),
-    { threshold: 0.2 }
+    { threshold: [0, 0.2] }
   );
-  $$(".split:not(#galleryTitle):not(#detailTitle):not(.contact__title), .reveal:not(.contact__list)").forEach((el) => revealIO.observe(el));
+  $$(".split:not(#galleryTitle):not(#detailTitle):not(.contact__title), .reveal").forEach((el) => revealIO.observe(el));
 } else {
   $$(".split, .reveal").forEach((el) => el.classList.add("is-in"));
 }
@@ -390,10 +402,13 @@ function applyClouds(p) {
   cover.style.setProperty("--fog", (1 - ease(clamp01((p - 0.15) / 0.6))).toFixed(3));
   cover.classList.toggle("is-gone", p > 0.995);
   // 구름이 반쯤 걷히면 타이틀·버튼이 페이드 인
+  if (contactRevealed && p < 0.2) {
+    contactRevealed = false;
+    resetFade($(".contact__title"));
+  }
   if (!contactRevealed && p > 0.55) {
     contactRevealed = true;
     $(".contact__title").classList.add("is-in");
-    $(".contact__list").classList.add("is-in");
   }
 }
 function stepClouds() {
@@ -421,3 +436,52 @@ document.addEventListener("keydown", (e) => {
 
 /* 첫 진입 */
 route();
+
+/* ---------- 로딩 화면: 이미지가 다 불러와지면 사라짐 ---------- */
+(function loader() {
+  const box = $("#loader");
+  const bar = $("#loaderBar");
+  const pct = $("#loaderPct");
+  const homeTitle = $(".home__title");
+  $$(".js-year").forEach((el) => (el.textContent = new Date().getFullYear()));
+  document.body.classList.add("is-loading");
+  resetFade(homeTitle);
+
+  // 화면에 쓰이는 이미지 + 배경 이미지를 미리 불러오며 진행률 계산
+  const srcs = new Set([...document.images].map((img) => img.src));
+  ["cloud-left.png", "cloud-right.png", "aru-wave-sprite.png"].forEach((f) => srcs.add(new URL(`./assets/images/${f}`, location.href).href));
+  const total = srcs.size || 1;
+  let loaded = 0;
+  let shown = 0;
+  const MIN_TIME = 1200; // 너무 빨리 지나가지 않도록 최소 표시 시간
+  const start = performance.now();
+
+  srcs.forEach((src) => {
+    const img = new Image();
+    img.onload = img.onerror = () => loaded++;
+    img.src = src;
+  });
+
+  function tick(now) {
+    const real = loaded / total;
+    const timeCap = Math.min(1, (now - start) / MIN_TIME);
+    const goal = Math.min(real, timeCap) * 100;
+    shown += (goal - shown) * 0.15;
+    if (goal - shown < 0.5) shown = goal;
+    bar.style.width = `${shown}%`;
+    pct.textContent = Math.round(shown);
+    if (shown >= 100) {
+      // 로딩 화면이 통째로 위로 올라가며 HOME 등장
+      setTimeout(() => {
+        box.classList.add("is-done");
+        document.body.classList.remove("is-loading");
+        homeTitle.classList.add("is-in");
+      }, 300);
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  // 안전장치: 8초가 지나면 무조건 닫기
+  setTimeout(() => { loaded = total; }, 8000);
+})();

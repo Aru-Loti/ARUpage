@@ -98,8 +98,8 @@
         </div>
 
         <div class="home__aru" aria-hidden="true">
-          <img class="aru-wave aru-wave--1" src="./assets/images/aru-wave-1.png" alt="" />
-          <img class="aru-wave aru-wave--2" src="./assets/images/aru-wave-2.png" alt="" />
+          <!-- 손 흔들기: 두 동작을 한 장에 붙인 그림을 번갈아 보여줌 (반투명해지는 순간이 없어 깜빡이지 않음) -->
+          <span class="aru-sprite"></span>
         </div>
       </div>
 
@@ -275,6 +275,22 @@
       </div>
     </div>
   </section>
+
+  <!-- 로딩 화면 -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <svg class="loader__star" viewBox="0 0 120 100" aria-hidden="true">
+        <path d="M60 4C62.2 30 70 41 96 47 70 53 62.2 64 60 90 57.8 64 50 53 24 47 50 41 57.8 30 60 4Z" />
+        <circle class="loader__dot loader__dot--a" cx="104" cy="10" r="4.5" />
+        <circle class="loader__dot loader__dot--b" cx="18" cy="82" r="3.5" />
+      </svg>
+      <p class="loader__title">ARU<span>’s</span> Pond</p>
+      <p class="loader__sub">WHERE MY LITTLE IDEAS GROW</p>
+      <div class="loader__bar"><span id="loaderBar"></span></div>
+      <p class="loader__pct">LOADING <span id="loaderPct">0</span>%</p>
+    </div>
+    <p class="loader__copy">© <span class="js-year">2026</span> ARU’S POND</p>
+  </div>
 
   <script src="./script.js"></script>
 </body>

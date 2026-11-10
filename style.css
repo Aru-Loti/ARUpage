@@ -144,14 +144,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--soft-ink);
 }
 .home__title span { display: block; }
-.home__title span {
-  opacity: 0;
-  transform: translateY(24px);
-  animation: titleIn .7s cubic-bezier(.2, .8, .2, 1) forwards;
-}
-.home__title span:nth-child(2) { animation-delay: .12s; }
-.home__title span:nth-child(3) { animation-delay: .24s; }
-@keyframes titleIn { to { opacity: 1; transform: none; } }
+
 
 .home__desc {
   margin: 4px 0 0 4px;
@@ -232,8 +225,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 @keyframes shadowFloat { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.78); opacity: .6; } }
 .aru-wave--2 { opacity: 0; }
-.home__aru.is-wave .aru-wave--1 { opacity: 0; }
-.home__aru.is-wave .aru-wave--2 { opacity: 1; }
+/* 손 흔들기: 한 장 안에서 칸만 바꿈 → 겹침·반투명 없음 */
+.aru-sprite {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: url("./assets/images/aru-wave-sprite.png") 0 0 / 200% 100% no-repeat;
+  animation: aruWave 1.12s step-end infinite, float 3.2s ease-in-out infinite;
+}
+@keyframes aruWave {
+  0%   { background-position: 0 0; }
+  50%  { background-position: 100% 0; }
+  100% { background-position: 100% 0; }
+}
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
 /* ---------------- WORK ---------------- */
@@ -342,7 +346,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin-top: clamp(24px, 2.5vw, 40px);
   opacity: 0;
 }
-.work.is-visible .work__aru { animation: aruAppear 1.2s ease .7s forwards; }
+.work__aru { transform-origin: 50% 100%; }
+/* 살포시 한 번 뽀용 (작고 차분하게) */
+.work.is-visible .work__aru { animation: aruPop .8s cubic-bezier(.34, 1.3, .64, 1) .6s forwards; }
+@keyframes aruPop {
+  0%   { opacity: 0; transform: translateY(12px) scale(.92); }
+  60%  { opacity: 1; transform: translateY(-3px) scale(1.02); }
+  100% { opacity: 1; transform: none; }
+}
 @keyframes aruAppear {
   0%   { opacity: 0;  transform: translateY(10px); }
   33%  { opacity: .2; }
@@ -560,19 +571,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: .01em;
 }
 
-/* ---------------- 글자 페이드 인 (한 글자씩 차례로) ---------------- */
+/* ---------------- 큰 제목 페이드 인 (한 번에) ---------------- */
 .split .ch {
   display: inline-block;
   opacity: 0;
-  transition: opacity .9s ease;
-  transition-delay: calc(var(--i) * 45ms + var(--base, 0ms));
+  transition: opacity 1s ease;
 }
-.split .ch.is-space { width: .28em; }
+.split .word { display: inline-block; white-space: nowrap; }
 .split.is-in .ch { opacity: 1; }
 
 /* 스크롤하면 서서히 나타나는 요소 */
 .reveal { opacity: 0; transition: opacity .9s ease; transition-delay: var(--rd, 0s); }
 .reveal.is-in { opacity: 1; }
+
+/* 초기화할 때는 애니메이션 없이 바로 */
+.no-anim, .no-anim .ch { transition: none !important; }
 
 /* 하위 화면에서는 상단 메뉴 숨김 */
 body.is-sub .nav { display: none; }
@@ -843,3 +856,86 @@ body.is-sub .nav { display: none; }
   .cloud-cover { display: none; }
   .home__title span, .work__aru, .contact__aru, .split .ch, .reveal { opacity: 1 !important; transform: none !important; }
 }
+
+/* ---------------- 로딩 화면 ---------------- */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #FFFFFF 0%, #FBFAFE 55%, #F8F6FC 100%);
+  transition: transform .8s cubic-bezier(.76, 0, .24, 1), visibility 0s linear .8s;
+}
+/* 화면 전체가 깔끔하게 위로 올라감 */
+.loader.is-done { transform: translateY(-100%); visibility: hidden; }
+
+
+
+.loader__inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.loader__star { width: clamp(70px, 6vw, 110px); margin-bottom: clamp(36px, 4.5vw, 80px); overflow: visible; }
+.loader__star path { fill: #B39DE6; transform-origin: 60px 90px; animation: starBounce .9s infinite; }
+/* 통통: 위로 튀었다가 떨어지며 찌그러지고 다시 튐 */
+@keyframes starBounce {
+  0%   { transform: translateY(0) scale(1.15, .85); animation-timing-function: cubic-bezier(.2, .7, .4, 1); }
+  15%  { transform: translateY(-4px) scale(.92, 1.08); }
+  50%  { transform: translateY(-22px) scale(1, 1); animation-timing-function: cubic-bezier(.6, 0, .8, .3); }
+  88%  { transform: translateY(0) scale(1, 1); }
+  100% { transform: translateY(0) scale(1.15, .85); }
+}
+.loader__dot { fill: #D9CBF3; animation: dotBlink .9s ease-in-out infinite; }
+.loader__dot--b { animation-delay: .45s; }
+@keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.loader__title {
+  margin: 0;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(44px, 4.6vw, 88px);
+  line-height: 1;
+  letter-spacing: -.01em;
+  color: #2E2A45;
+}
+.loader__title span { color: #A98BDD; }
+.loader__sub {
+  margin: clamp(22px, 2vw, 34px) 0 0;
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: clamp(12px, .85vw, 16px);
+  letter-spacing: .04em;
+  color: #9C98AE;
+}
+.loader__bar {
+  width: clamp(220px, 20vw, 300px);
+  height: 3px;
+  margin-top: clamp(40px, 4.5vw, 80px);
+  border-radius: 3px;
+  background: #ECE8F6;
+  overflow: hidden;
+}
+.loader__bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 3px;
+  background: #A98BDD;
+  transition: width .25s ease;
+}
+.loader__pct {
+  margin: 22px 0 0;
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: #A6A2B5;
+}
+.loader__copy {
+  position: absolute;
+  bottom: clamp(28px, 4vh, 48px);
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: #B3AFC2;
+}
+body.is-loading { overflow: hidden; }
