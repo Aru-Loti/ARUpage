@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>느긋한 편집실 | Capybara's Tiny Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --color-bg-ivory: #FAF5EE;
+    --color-bg-mint: #A5BAAA;
+    --color-bg-red: #D35441;
+    --color-card-bg: #FFFFFF;
+    --color-text-dark: #29352F;
+    --color-accent-coral: #F34468;
+    --font-heading: 'Nanum Pen Script', cursive;
+    --font-body: 'Gowun Dodum', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background-color: var(--color-bg-ivory); color: var(--color-text-dark); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+
+.header { flex-wrap: wrap; gap: 14px; display: flex; justify-content: space-between; align-items: center; padding: 24px 60px; background-color: var(--color-bg-ivory); position: sticky; top: 0; z-index: 100; }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; }
+.logo-dot { width: 10px; height: 10px; background-color: var(--color-accent-coral); border-radius: 50%; }
+.nav-menu { flex-wrap: wrap; display: flex; gap: 32px; font-size: 0.95rem; color: #666; }
+.nav-menu a.active, .nav-menu a:hover { color: var(--color-accent-coral); font-weight: bold; border-bottom: 2px solid var(--color-accent-coral); padding-bottom: 2px; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.hero-section { display: grid; grid-template-columns: 1fr 1fr; padding: 60px 80px; align-items: center; min-height: calc(100vh - 80px); }
+.sub-title { font-family: var(--font-heading); color: var(--color-accent-coral); font-size: 1.5rem; letter-spacing: 1px; display: block; margin-bottom: 12px; }
+.hero-text h1 { font-family: var(--font-heading); font-size: 4rem; line-height: 1.2; margin-bottom: 24px; }
+.hero-text p { font-size: 1.1rem; color: #555; margin-bottom: 32px; }
+.btn-primary { display: inline-block; padding: 12px 28px; border: 1px solid var(--color-text-dark); border-radius: 30px; transition: all 0.2s; }
+.btn-primary:hover { background-color: var(--color-text-dark); color: #fff; }
+
+.hero-image { position: relative; display: flex; justify-content: center; align-items: center; }
+.circle-bg { position: absolute; width: 380px; height: 480px; background-color: #F3C68F; border-radius: 200px 200px 30px 30px; z-index: 1; }
+.hero-image img { position: relative; z-index: 2; width: 360px; border-radius: 12px; }
+
+.routine-section { background-color: var(--color-bg-mint); padding: 100px 80px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; }
+.small-badge { font-family: var(--font-heading); font-size: 1.2rem; color: #29352F; background: rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 16px; }
+.routine-title-box h2 { font-family: var(--font-heading); font-size: 3.5rem; line-height: 1.2; color: #29352F; }
+.routine-steps { display: flex; flex-direction: column; gap: 32px; }
+.step-item { display: flex; gap: 24px; align-items: flex-start; }
+.step-num { font-family: var(--font-heading); font-size: 1.8rem; color: #555; }
+.step-desc strong { font-size: 1.1rem; display: block; margin-bottom: 4px; color: #29352F; }
+
+.film-section { background-color: var(--color-bg-red); padding: 100px 80px; color: #fff; display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center; }
+.film-badge { font-family: var(--font-heading); font-size: 1.2rem; color: #FFD1CD; display: block; margin-bottom: 12px; }
+.film-text h2 { font-family: var(--font-heading); font-size: 3.5rem; line-height: 1.2; margin-bottom: 16px; }
+.video-container video { width: 100%; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); background: #000; }
+
+.gallery-header { text-align: center; padding: 60px 20px 40px; }
+.gallery-header h2 { font-family: var(--font-heading); font-size: 3.5rem; margin-bottom: 10px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; max-width: 1100px; margin: 0 auto 100px; padding: 0 20px; }
+.gallery-card { cursor: pointer; transition: transform 0.2s; }
+.gallery-card:hover { transform: translateY(-5px); }
+
+/* 머그컵 형태의 썸네일 프레임 (이미지 비율 유지 및 깔끔한 출력) */
+.image-frame { width: 100%; height: 380px; background: #FAF5EE; border-radius: 24px; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 2px solid #e5dccf; }
+.image-frame img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+
+.card-info { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 0 10px; }
+.card-tag { font-family: var(--font-heading); color: var(--color-accent-coral); font-size: 1.2rem; }
+.card-num { font-size: 1rem; color: #777; }
+.card-title { font-family: var(--font-heading); font-size: 2rem; margin-top: 4px; padding: 0 10px; }
+
+.contact-wrapper { display: grid; grid-template-columns: 1.2fr 1fr; background-color: var(--color-bg-mint); min-height: calc(100vh - 160px); padding: 80px; align-items: center; }
+.contact-left h2 { font-family: var(--font-heading); font-size: 4rem; line-height: 1.2; margin-bottom: 24px; color: #29352F; }
+.contact-left p { font-size: 1.1rem; margin-bottom: 32px; color: #3b4a43; }
+.email-link { font-family: var(--font-heading); font-size: 2.2rem; display: inline-block; border-bottom: 2px solid #29352F; padding-bottom: 4px; margin-bottom: 40px; color: #29352F; }
+.social-links { display: flex; gap: 24px; font-size: 0.95rem; color: #3b4a43; }
+.contact-memo { text-align: center; font-family: var(--font-heading); font-size: 1.4rem; margin-top: 20px; color: #29352F; }
+
+/* 모달 팝업 */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+.modal.active { display: flex; }
+.modal-content { max-height: 92vh; overflow-y: auto; background-color: #FAF5EE; width: 850px; border-radius: 12px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 4px solid var(--color-accent-coral); overflow: hidden; }
+.modal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 1.8rem; cursor: pointer; z-index: 10; color: #555; }
+.modal-body { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; }
+.modal-img-wrap { height: 400px; background: #fff; display: flex; align-items: center; justify-content: center; }
+.modal-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+.modal-text-wrap { padding: 40px; }
+.modal-text-wrap h3 { font-family: var(--font-heading); font-size: 2.6rem; line-height: 1.2; margin: 10px 0 20px; }
+.modal-text-wrap p { font-size: 0.95rem; color: #555; margin-bottom: 30px; }
+.modal-pagination { display: flex; align-items: center; gap: 20px; }
+.page-arrow { background: none; border: 1px solid #ccc; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.page-arrow:hover { background: var(--color-text-dark); color: #fff; border-color: var(--color-text-dark); }
+
+.footer { display: flex; justify-content: space-between; align-items: center; padding: 30px 60px; background-color: var(--color-bg-ivory); border-top: 1px solid #e5dccf; font-size: 0.9rem; color: #777; }
+
+@media (max-width: 900px) {
+    .hero-section, .routine-section, .film-section, .contact-wrapper { grid-template-columns: 1fr; padding: 40px 20px; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .header { padding: 20px; }
+    .modal-content { width: 90%; }
+    .modal-body { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+    <!-- 상단 헤더 -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-dot"></span>
+            <a href="#home" class="nav-link" data-target="home">느긋한 편집실</a>
+        </div>
+        <nav class="nav-menu">
+            <a href="#home" class="nav-link active" data-target="home">홈</a>
+            <a href="#gallery" class="nav-link" data-target="gallery">사진첩</a>
+            <a href="#contact" class="nav-link" data-target="contact">컨택트</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- [HOME 탭] -->
+        <section id="home" class="tab-content active">
+            <div class="hero-section">
+                <div class="hero-text">
+                    <span class="sub-title">CAPYBARA'S TINY STUDIO</span>
+              <h1>천천히 만들어도,<br>이야기는 반짝이니까.</h1>
+              <p>커피 향과 오후의 햇살이 머무는 곳.<br>카피바라의 작고 다정한 영상 작업실입니다.</p>
+                    <a href="#gallery" class="btn-primary nav-link" data-target="gallery">작업 구경하기 →</a>
+                </div>
+                <div class="hero-image">
+                    <div class="circle-bg"></div>
+                    <img src="assets/capybara-main.png" alt="카피바라 일러스트">
+                </div>
+            </div>
+
+            <div class="routine-section">
+                <div class="routine-title-box">
+                    <span class="small-badge">A SMALL ROUTINE</span>
+                 <h2>한 편의 영상이<br>완성되는 느린 하루</h2>
+                </div>
+                <div class="routine-steps">
+                    <div class="step-item">
+                        <span class="step-num">01</span>
+                        <div class="step-desc">
+                        <strong>떠올리기</strong>
+                   <p>노트에 엉뚱하고 귀여운 생각을 마음껏 그려요.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-num">02</span>
+                        <div class="step-desc">
+                       <strong>이어 붙이기</strong>
+                   <p>장면과 음악이 자연스럽게 만날 때까지 다듬어요.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-num">03</span>
+                        <div class="step-desc">
+                       <strong>기분 좋게 끝내기</strong>
+                   <p>마지막 색을 입히고 따뜻한 커피로 축하해요.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="film-section">
+                <div class="film-text">
+                    <span class="film-badge">TODAY'S FILM</span>
+              <h2>포근한 작업실의<br>어느 하루</h2>
+              <p>재생 버튼을 눌러 카피바라의 조용한 작업 시간을 만나 보세요.</p>
+                </div>
+                <div class="video-container">
+                    <video controls poster="assets/capybara-desk.png">
+                        <source src="assets/film.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <!-- [GALLERY 탭 - 8개 작품 연동] -->
+        <section id="gallery" class="tab-content">
+            <div class="gallery-header">
+                <span class="sub-title">CAPYBARA'S ALBUM</span>
+           <h2>느긋한 하루의 장면들</h2>
+          <p>좋아하는 장면을 누르면 그날의 이야기가 열립니다.</p>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- 1 -->
+                <div class="gallery-card" data-id="1">
+                    <div class="image-frame">
+                        <img src="assets/thumb-1.png" alt="노트북 앞의 시간">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">IDEA TIME</span>
+                        <span class="card-num">01</span>
+                    </div>
+                    <h3 class="card-title">노트북 앞의 작은 여유</h3>
+                </div>
+                <!-- 2 -->
+                <div class="gallery-card" data-id="2">
+                    <div class="image-frame">
+                        <img src="assets/thumb-2.png" alt="초록 한 모금">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">BOTANICAL</span>
+                        <span class="card-num">02</span>
+                    </div>
+                    <h3 class="card-title">오늘도 초록 한 모금</h3>
+                </div>
+                <!-- 3 -->
+                <div class="gallery-card" data-id="3">
+                    <div class="image-frame">
+                        <img src="assets/thumb-3.png" alt="싱그러운 순간">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">REFRESH</span>
+                        <span class="card-num">03</span>
+                    </div>
+                    <h3 class="card-title">가장 싱그러운 순간</h3>
+                </div>
+                <!-- 4 -->
+                <div class="gallery-card" data-id="4">
+                    <div class="image-frame">
+                        <img src="assets/thumb-4.png" alt="뒷모습의 이야기">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">STORY</span>
+                        <span class="card-num">04</span>
+                    </div>
+                    <h3 class="card-title">기다림의 뒷모습</h3>
+                </div>
+                <!-- 5 -->
+                <div class="gallery-card" data-id="5">
+                    <div class="image-frame">
+                        <img src="assets/thumb-5.png" alt="달빛 아래 성">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">FANTASY</span>
+                        <span class="card-num">05</span>
+                    </div>
+                    <h3 class="card-title">달빛 아래 판타지 성</h3>
+                </div>
+                <!-- 6 -->
+                <div class="gallery-card" data-id="6">
+                    <div class="image-frame">
+                        <img src="assets/thumb-6.png" alt="차세대 비전">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">VISION</span>
+                        <span class="card-num">06</span>
+                    </div>
+                    <h3 class="card-title">새로운 산업과 진화</h3>
+                </div>
+                <!-- 7 -->
+                <div class="gallery-card" data-id="7">
+                    <div class="image-frame">
+                        <img src="assets/thumb-7.png" alt="책 읽는 부엉이">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">STUDY</span>
+                        <span class="card-num">07</span>
+                    </div>
+                    <h3 class="card-title">지혜로운 배움의 숲</h3>
+                </div>
+                <!-- 8 -->
+                <div class="gallery-card" data-id="8">
+                    <div class="image-frame">
+                        <img src="assets/thumb-8.png" alt="데일리 아카이브">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">ARCHIVE</span>
+                        <span class="card-num">08</span>
+                    </div>
+                    <h3 class="card-title">나만의 소중한 기록</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- [CONTACT 탭] -->
+        <section id="contact" class="tab-content">
+            <div class="contact-wrapper">
+                <div class="contact-left">
+                    <span class="sub-title">SAY HELLO</span>
+               <h2>같이 느긋하고<br>재미있는 걸 만<br>들어요.</h2>
+               <p>수업, 프로젝트, 새로운 아이디어에 관한 이야기를 기다리고 있어요.</p>
+                    <span class="email-link">연락처 입력 예정</span>
+                    <div class="social-links">
+                        <span>Instagram (링크 준비 중)</span>
+                        <span>YouTube (링크 준비 중)</span>
+                        <span>Portfolio (링크 준비 중)</span>
+                    </div>
+                </div>
+                <div class="contact-right">
+                    <div class="image-frame">
+                        <img src="assets/capybara-desk.png" alt="작업실 풍경">
+                    </div>
+                    <p class="contact-memo">답장은 커피 한 잔을 마신 뒤, 천천히 보내드릴게요.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 상세 팝업 모달 -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-body">
+                <div class="modal-img-wrap">
+                    <img id="modalImg" src="" alt="모달 이미지">
+                </div>
+                <div class="modal-text-wrap">
+                    <span id="modalCategory" class="sub-title">SCENE 01 · IDEA TIME</span>
+                    <h3 id="modalTitle">제목</h3>
+                    <p id="modalDesc">설명 내용이 들어갑니다.</p>
+                    <div class="modal-pagination">
+                        <button id="prevBtn" class="page-arrow">←</button>
+                        <span id="pageIndicator">01 / 08</span>
+                        <button id="nextBtn" class="page-arrow">→</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="logo">
+            <span class="logo-dot"></span>
+         <span>느긋한 편집실</span>
+        </div>
+        <p>© 2026 SLOW STUDIO</p>
+    </footer>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 탭 전환
+    const navLinks = document.querySelectorAll('.nav-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+                if(tab.id === targetId) tab.classList.add('active');
+            });
+
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(el => {
+                el.classList.add('active');
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    // 갤러리 모달 데이터 (8종 에셋 완벽 연동)
+    const galleryCards = document.querySelectorAll('.gallery-card');
+    const modal = document.getElementById('photoModal');
+    const modalClose = document.querySelector('.modal-close');
+    const modalImg = document.getElementById('modalImg');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const galleryData = [
+        {
+            category: "SCENE 01 · IDEA TIME",
+            title: "노트북 앞의 작은 여유",
+            desc: "창가에 앉아 노트북으로 아이디어를 스케치하고 기록하는 따뜻한 작업 시간입니다.",
+            img: "assets/thumb-1.png"
+        },
+        {
+            category: "SCENE 02 · BOTANICAL",
+            title: "오늘도 초록 한 모금",
+            desc: "싱그러운 민트와 자연의 청량함을 담아 기분 좋은 활력을 불어넣습니다.",
+            img: "assets/thumb-2.png"
+        },
+        {
+            category: "SCENE 03 · REFRESH",
+            title: "가장 싱그러운 순간",
+            desc: "햇살이 내리쬐는 나무 테이블 위, 레몬과 허브가 전해주는 상쾌한 휴식입니다.",
+            img: "assets/thumb-3.png"
+        },
+        {
+            category: "SCENE 04 · STORY",
+            title: "기다림의 뒷모습",
+            desc: "고요한 창가에서 깊은 생각에 잠겨 새로운 이야기를 준비하는 차분한 여운입니다.",
+            img: "assets/thumb-4.png"
+        },
+        {
+            category: "SCENE 05 · FANTASY",
+            title: "달빛 아래 판타지 성",
+            desc: "밤하늘의 별과 신비로운 성이 어우러져 상상력을 무한히 펼치게 만드는 세계입니다.",
+            img: "assets/thumb-5.png"
+        },
+        {
+            category: "SCENE 06 · VISION",
+            title: "새로운 산업과 진화",
+            desc: "구름 위로 펼쳐지는 광활한 풍경 속에서 미래의 비전과 가능성을 그려봅니다.",
+            img: "assets/thumb-6.png"
+        },
+        {
+            category: "SCENE 07 · STUDY",
+            title: "지혜로운 배움의 숲",
+            desc: "책을 펼치고 지식을 탐구하는 부엉이처럼, 매일 새롭게 성장하는 배움의 즐거움입니다.",
+            img: "assets/thumb-7.png"
+        },
+        {
+            category: "SCENE 08 · ARCHIVE",
+            title: "나만의 소중한 기록",
+            desc: "레이스 패브릭과 드라이플라워 곁에서 차곡차곡 쌓아가는 일상 아카이브입니다.",
+            img: "assets/thumb-8.png"
+        }
+    ];
+
+    let currentIndex = 0;
+
+    function updateModal(index) {
+        const item = galleryData[index];
+        modalImg.src = item.img;
+        modalCategory.textContent = item.category;
+        modalTitle.textContent = item.title;
+        modalDesc.textContent = item.desc;
+        pageIndicator.textContent = `0${index + 1} / 0${galleryData.length}`;
+        currentIndex = index;
+    }
+
+    galleryCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const id = parseInt(card.getAttribute('data-id')) - 1;
+            updateModal(id);
+            modal.classList.add('active');
+        });
+    });
+
+    modalClose.addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+    });
+
+    prevBtn.addEventListener('click', () => {
+        let newIndex = (currentIndex - 1 + galleryData.length) % galleryData.length;
+        updateModal(newIndex);
+    });
+
+    nextBtn.addEventListener('click', () => {
+        let newIndex = (currentIndex + 1) % galleryData.length;
+        updateModal(newIndex);
+    });
+});
+
+</script>
+</body>
+</html>
